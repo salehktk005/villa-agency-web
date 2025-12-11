@@ -1,0 +1,30 @@
+apiVersion: apps/v1                
+kind: Deployment                   
+metadata:
+  name: agency-deployment          # Name of the Deployment
+  namespace: agency-namespace      
+spec:
+  replicas: 2                      # Number of pod replicas to run
+  selector:
+    matchLabels:
+      app: agency                  # Selector to match the pods created below
+  template:                        # Pod template (this defines the pod)
+    metadata:
+      labels:
+        app: agency                #  (must match selector above)
+    spec:
+      containers:
+        - name: agency-kah-container     # Name of container
+          image: salehktk16/agency_wala  
+          ports:
+            - containerPort: 81        # Exposing port 80 inside container (Nginx)
+          
+          resources:                      # (HPA related)
+            limits:                       # Max allowed resources
+              memory: "512Mi"
+              cpu: "500m"
+            requests:                     # Minimum resources guaranteed
+              memory: "256Mi"
+              cpu: "250m"
+
+      restartPolicy: Always               # Always restart the pod if it fails
