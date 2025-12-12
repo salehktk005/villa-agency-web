@@ -1,24 +1,29 @@
 pipeline {
     agent any
 
-    stages {
+    environment {
+        IMAGE = "salehktk16/agency_wala"
+        CONTAINER = "agency_wala_container"
+        PORT = "8080"
+    }
 
-        stage('Checkout') {
+    stages {
+        stage('Checkout Code') {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/salehktk005/villa-agency-web.git'
             }
         }
 
-        stage('Test') {
+        stage('Test Website') {
             steps {
-                echo "Running tests..."
-                sh ''' 
-                    if [ -f package.json ]; then
-                        npm install
-                        npm test || true
+                echo "Running basic website tests..."
+                sh '''
+                    if [ -f index.html ]; then
+                        echo "✔ index.html found"
                     else
-                        echo "No tests found."
+                        echo "❌ index.html missing"
+                        exit 1
                     fi
                 '''
             }
@@ -27,35 +32,28 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image..."
-                sh """
-                    docker build -t salehktk16/agency_wala:latest .
-                """
+                sh "docker build -t ${IMAGE}:latest ."
             }
         }
 
-        stage('Run Container') {
+        stage('Deploy Container') {
             steps {
-                echo "Running container..."
+                echo "Deploying container..."
                 sh """
-                    docker stop agency_wala_container || true
-                    docker rm agency_wala_container || true
-                    docker run -d -p 8080:80 --name agency_wala_container salehktk16/agency_wala:latest
+                    docker stop ${CONTAINER} || true
+                    docker rm ${CONTAINER} || true
+                    docker run -d -p ${PORT}:80 --name ${CONTAINER} ${IMAGE}:latest
                 """
             }
         }
+    }
 
-        // OPTIONAL — only add if you want to push image to Docker Hub
-        /*
-        stage('Push to Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh """
-                        echo "$PASS" | docker login -u "$USER" --password-stdin
-                        docker push salehktk16/agency_wala:latest
-                    """
-                }
-            }
+    post {
+        success {
+            echo "✅ Deployment successful! Visit http://localhost:${PORT}"
         }
-        */
+        failure {
+            echo "❌ Deployment failed!"
+        }
     }
 }
