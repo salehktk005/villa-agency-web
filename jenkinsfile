@@ -6,24 +6,7 @@ pipeline {
         TAG = "latest"
     }
 
-    stages {
-        stage('Checkout Code') {
-            steps {
-                // Optional if you want to rebuild the image from Dockerfile
-                git branch: 'main',
-                    url: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // If you already have the image on Docker Hub, you can skip build
-                    // If you want to build locally from Dockerfile:
-                    docker.build("${IMAGE_NAME}:${TAG}")
-                }
-            }
-        }
+    stages {    
 
         stage('Run Docker Container') {
             steps {
