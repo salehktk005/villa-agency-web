@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
         IMAGE = "salehktk16/agency_wala"
         CONTAINER = "agency_wala_container"
@@ -31,17 +30,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo "Building Docker image..."
                 sh "docker build -t ${IMAGE}:latest ."
             }
         }
 
         stage('Deploy Container') {
             steps {
-                echo "Deploying container..."
                 sh """
-                    docker stop ${CONTAINER} || true
-                    docker rm ${CONTAINER} || true
                     docker run -d -p ${PORT}:80 --name ${CONTAINER} ${IMAGE}:latest
                 """
             }
