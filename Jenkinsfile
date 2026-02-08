@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 pipeline{
     agent{
         label "node"
@@ -23,4 +20,4 @@ pipeline{
         }
     }
 }
->>>>>>> 4228948 (new jenkins file adding)
+
