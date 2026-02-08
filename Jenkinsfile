@@ -1,1 +1,26 @@
+<<<<<<< HEAD
 
+=======
+pipeline{
+    agent{
+        label "node"
+    }
+    stages{
+        stage("build"){
+            steps{
+                echo "========executing build========"
+            }
+            }
+        stage("test"){
+            steps{
+                echo "========executing test========"
+            }
+        }
+        stage("deploy"){
+            steps{
+                echo "========executing deploy========"
+            }
+        }
+    }
+}
+>>>>>>> 4228948 (new jenkins file adding)
