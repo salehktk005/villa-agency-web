@@ -33,7 +33,7 @@ pipeline{
         stage("deploy"){
             steps{
                 echo "========executing deploy========"
-                sh "docker compose up -d"
+                sh "docker run -d -p 80:80 --name agency-app agency-app:1.0"
             }
         }
     }
